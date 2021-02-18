@@ -22,7 +22,7 @@ def check_for_srt(file, root):
     result = os.popen(command)
     json_result = json.loads(result.read())
 
-    # check if the file is understood by mkvtoolnix and if it conrains srt tracks
+    # check if the file is understood by mkvtoolnix and if it contains srt tracks
     if json_result['container']['recognized']:
         srt_tracks = []
         non_srt_tracks = []
@@ -59,7 +59,7 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
     for srt_track in non_srt_tracks:
         non_srt_track_nrs.append(str(srt_track['id']))
 
-    # requiered information to mux the srt files with the original information like language or name
+    # required information to mux the srt files with the original information like language or name
     track_mux_commands = []
     for srt_track in srt_tracks:
         uid = str(srt_track['properties']['uid'])
