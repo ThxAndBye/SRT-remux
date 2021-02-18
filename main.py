@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 
-root_directory = "Z:\Moribito Guardian of the Spirit"
+root_directory = "[enter root path here]"
 
 
 def handle_directory(directory):
