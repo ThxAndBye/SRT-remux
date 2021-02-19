@@ -2,12 +2,11 @@ import json
 import os
 import shutil
 import re
+import sys
 
-# Directory where to start recursively
-root_directory = "Z:\Test"
 
-# to prevent fixing files twice
-current_mkvmerge_version = "mkvmerge v53.0.0 ('Fool's Gold') 64-bit"
+# to prevent fixing files twice, fallback
+current_mkvmerge_version = ""
 
 
 def handle_directory(directory):
@@ -132,4 +131,17 @@ def check_mkv(file):
 
 
 if __name__ == '__main__':
-    handle_directory(root_directory)
+    current_mkvmerge_version = os.popen("mkvmerge.exe --version").read().split("\n")[0]
+    current_mediainfocli_version = os.popen("MediaInfo.exe --version").read().split("\n")[1]
+    print("SRT-remux by Thx And Bye\n"
+          "Working with: " + current_mkvmerge_version + " and " + current_mediainfocli_version)
+    try:
+        root_directory = sys.argv[1]
+    except IndexError:
+        root_directory = ""
+    if os.path.isdir(root_directory):
+        print("Starting to remux .srt files starting at: " + root_directory)
+        handle_directory(root_directory)
+    else:
+        print("Error: Not a valid directory provided.\n\n"
+              "main.py <directory>")
