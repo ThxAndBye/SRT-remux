@@ -89,8 +89,13 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
     command = 'mkvmerge.exe --ui-language en ' + \
               output_file + ' ' + subtitle_remove + ' ' + input_file + ' ' + \
               ' '.join(track_mux_commands) + ' ' + \
-              '--title "' + os.path.splitext(file)[0] + '" '
-    os.system(command)
+              '--title "' + os.path.splitext(file)[0] + '" ' + \
+              '--abort-on-warnings'
+    
+    if os.system(command) != 0:
+        print("Some error occurred, aborting ...")
+        shutil.rmtree(root + "\\temp")
+        exit(0)
 
 
 def gen_track_name(properties):
