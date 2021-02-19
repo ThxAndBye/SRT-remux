@@ -10,12 +10,8 @@ current_mkvmerge_version = ""
 
 def handle_directory(directory):
     for root, dirs, files in os.walk(directory, topdown=False):
-        handle_files(files, root)
-
-
-def handle_files(files, root):
-    for file in files:
-        check_for_srt(file, root)
+        for file in files:
+            check_for_srt(file, root)
 
 
 def check_for_srt(file, root):
