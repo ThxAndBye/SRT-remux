@@ -4,10 +4,10 @@ import shutil
 import re
 
 # Directory where to start recursively
-root_directory = "X:\AnimeMovies"
+root_directory = "Z:\Test\working"
 
 # to prevent fixing files twice
-current_mkvmerge_version = "mkvmerge v53.0.0 ('Fool's Gold') 64-bit"
+current_mkvmerge_version = "mkvmerge v54.0.0 ('Fool's Gold') 64-bit"
 
 
 def handle_directory(directory):
@@ -104,13 +104,26 @@ def cleanup(file, root):
     # check if new file was created before deleting the original one
     output_file = root + "\\temp\\" + file
 
-    if os.path.isfile(output_file):
+    if os.path.isfile(output_file) and check_mkv(output_file):
         os.remove(root + "\\" + file)
         shutil.move(output_file, root)
         print("Remux completed. Cleaning up ...")
     else:
         print("Error muxing new file. Cleaning up ...")
     shutil.rmtree(root + "\\temp")
+
+
+def check_mkv(file):
+    command = 'MediaInfo.exe --Output=JSON "' + file + '"'
+    result = os.popen(command)
+    json_result = json.loads(result.read())
+
+    is_ok = True
+    if 'extra' in json_result['media']['track'][0]:
+        is_truncated = True if ('IsTruncated' in json_result['media']['track'][0]['extra']) else False
+        segment_size_is_zero = True if ('SegmentSizeIsZero' in json_result['media']['track'][0]['extra']) else False
+        is_ok = not is_truncated and not segment_size_is_zero
+    return is_ok
 
 
 if __name__ == '__main__':
