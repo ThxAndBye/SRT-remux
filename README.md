@@ -3,4 +3,4 @@ Uses mkvextract and mkvmerge to fix strangely formatted srt subtitles in media f
 More information here: https://forums.plex.tv/t/missing-lines-in-srt-subtitles
 
 Always have backups of your files ready, even if there are checks in place that should prevent such behavior. 
-Don't blame me if all your files suddenly are deleted, your computer bursts up in flames or your nearest nuclear reacor goes into meltdown.
+Don't blame me if all your files suddenly are deleted, your computer bursts up in flames or your nearest nuclear reactor goes into meltdown.
