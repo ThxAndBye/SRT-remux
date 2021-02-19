@@ -4,10 +4,10 @@ import shutil
 import re
 
 # Directory where to start recursively
-root_directory = "Z:\Test\working"
+root_directory = "Z:\Test"
 
 # to prevent fixing files twice
-current_mkvmerge_version = "mkvmerge v54.0.0 ('Fool's Gold') 64-bit"
+current_mkvmerge_version = "mkvmerge v53.0.0 ('Fool's Gold') 64-bit"
 
 
 def handle_directory(directory):
