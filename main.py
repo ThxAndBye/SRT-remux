@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 
-root_directory = "[enter root path here]"
+root_directory = "Z:\Test\single"
 
 
 def handle_directory(directory):
@@ -54,6 +54,7 @@ def extract_srt(file, root, srt_tracks):
     print("Extracting done")
 
 
+# construct and execute the command for muxing
 def remux_srt(file, root, srt_tracks, non_srt_tracks):
     # it's important to know if there are other subtile formats present as those are kept
     non_srt_track_nrs = []
@@ -63,31 +64,37 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
     # required information to mux the srt files with the original information like language or name
     track_mux_commands = []
     for srt_track in srt_tracks:
-        uid = str(srt_track['properties']['uid'])
-        language = srt_track['properties']['language']
-        track_name = srt_track['properties']['track_name']
-        default_track = srt_track['properties']['default_track']
-        forced_track = srt_track['properties']['forced_track']
-        add_subtitle = '--language 0:' + language + ' --track-name 0:"' + track_name + '"' + \
-                       (' --default-track 0:yes' if default_track else '') + (' --forced-track 0:yes ' if forced_track else ' ') + \
-                       '"' + root + "\\temp\\" + uid + '.srt"'
+        language = '--language 0:' + srt_track['properties']['language_ietf']
+        track_name = '--track-name 0:"' + srt_track['properties']['track_name'] + '"'
+        default_track = ('--default-track 0:yes' if srt_track['properties']['default_track'] else '')
+        forced_track = ('--forced-track 0:yes' if srt_track['properties']['forced_track'] else '')
+        srt_file = '"' + root + "\\temp\\" + str(srt_track['properties']['uid']) + '.srt"'
+
+        add_subtitle = language + ' ' + track_name + ' ' + default_track + ' ' + forced_track + ' ' + srt_file
         track_mux_commands.append(add_subtitle)
 
-    # construct and execute the command for muxing
+    output_file = '"' + root + "\\temp\\" + file + '"'
+    subtitle_remove = ('-S' if len(non_srt_track_nrs) == 0 else '-s ' + ','.join(non_srt_track_nrs))
+    input_file = '"' + root + "\\" + file + '"'
+
     command = 'mkvmerge.exe --ui-language en ' + \
-              '--output "' + root + "\\temp\\" + file + '" ' + \
-              ('-S' if len(non_srt_track_nrs) == 0 else '-s ' + ','.join(non_srt_track_nrs)) + ' ' + \
-              '"' + root + "\\" + file + '" ' + \
+              '--output ' + output_file + ' ' + \
+              subtitle_remove + ' ' + \
+              input_file + ' ' + \
               ' '.join(track_mux_commands) + ' ' + \
               '--title "' + os.path.splitext(file)[0] + '" '
-    os.system(command)
+    # os.system(command)
+    print(command)
     print("Remux completed")
+
 
 def cleanup(file, root):
     # check if new file was created before deleting the original one
     if os.path.isfile(root + "\\temp\\" + file):
         os.remove(root + "\\" + file)
         shutil.move(root + "\\temp\\" + file, root)
+    else:
+        print("Error muxing new file. Cleaning up ...")
     shutil.rmtree(root + "\\temp")
 
 
