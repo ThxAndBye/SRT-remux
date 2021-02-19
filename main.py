@@ -11,8 +11,6 @@ current_mkvmerge_version = ""
 def handle_directory(directory):
     for root, dirs, files in os.walk(directory, topdown=False):
         handle_files(files, root)
-        for direct in dirs:
-            handle_directory(direct)
 
 
 def handle_files(files, root):
