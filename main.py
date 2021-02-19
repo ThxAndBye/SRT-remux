@@ -27,8 +27,7 @@ def check_for_srt(file, root):
 
     # check if the file is understood by mkvtoolnix and if it contains srt tracks
     if json_result['container']['recognized']:
-        if json_result['container']['type'] == "Matroska" and json_result['container']['properties'][
-            'writing_application'] != current_mkvmerge_version:
+        if json_result['container']['type'] == "Matroska" and json_result['container']['properties']['writing_application'] != current_mkvmerge_version:
             srt_tracks = []
             non_srt_tracks = []
             for track in json_result['tracks']:
