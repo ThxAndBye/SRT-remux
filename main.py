@@ -91,9 +91,9 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
               ' '.join(track_mux_commands) + ' ' + \
               '--title "' + os.path.splitext(file)[0] + '" ' + \
               '--abort-on-warnings'
-    
+
     if os.system(command) != 0:
-        print("Some error occurred, aborting ...")
+        print("Some problem occurred with " + file + ", aborting ...")
         shutil.rmtree(root + "\\temp")
         exit(0)
 
