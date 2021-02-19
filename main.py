@@ -73,7 +73,7 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
     track_mux_commands = []
     for srt_track in srt_tracks:
         language = '--language 0:' + srt_track['properties']['language']
-        track_name = '--track-name 0:"' + srt_track['properties']['track_name'] + '"'
+        track_name = '--track-name 0:"' + (srt_track['properties']['track_name'] if 'track_name' in srt_track['properties'] else gen_track_name(srt_track['properties'])) + '"'
         default_track = ('--default-track 0:yes' if srt_track['properties']['default_track'] else '')
         forced_track = ('--forced-track 0:yes' if srt_track['properties']['forced_track'] else '')
         srt_file = '"' + root + "\\temp\\" + str(srt_track['properties']['uid']) + '.srt"'
@@ -91,6 +91,13 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
               ' '.join(track_mux_commands) + ' ' + \
               '--title "' + os.path.splitext(file)[0] + '" '
     os.system(command)
+
+
+def gen_track_name(properties):
+    language = properties['language']
+    forced = 'FORCED' if properties['forced_track'] else 'SUBS'
+    track_name = language.upper() + ' - ' + forced
+    return track_name
 
 
 def cleanup(file, root):
