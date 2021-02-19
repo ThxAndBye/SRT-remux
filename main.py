@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import re
 
 root_directory = "Z:\Test\single"
 
@@ -71,20 +72,20 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
         srt_file = '"' + root + "\\temp\\" + str(srt_track['properties']['uid']) + '.srt"'
 
         add_subtitle = language + ' ' + track_name + ' ' + default_track + ' ' + forced_track + ' ' + srt_file
+        add_subtitle = re.sub(' +', ' ', add_subtitle)
         track_mux_commands.append(add_subtitle)
 
-    output_file = '"' + root + "\\temp\\" + file + '"'
+    output_file = '--output ' + '"' + root + "\\temp\\" + file + '"'
     subtitle_remove = ('-S' if len(non_srt_track_nrs) == 0 else '-s ' + ','.join(non_srt_track_nrs))
     input_file = '"' + root + "\\" + file + '"'
 
     command = 'mkvmerge.exe --ui-language en ' + \
-              '--output ' + output_file + ' ' + \
+              output_file + ' ' + \
               subtitle_remove + ' ' + \
               input_file + ' ' + \
               ' '.join(track_mux_commands) + ' ' + \
               '--title "' + os.path.splitext(file)[0] + '" '
-    # os.system(command)
-    print(command)
+    os.system(command)
     print("Remux completed")
 
 
