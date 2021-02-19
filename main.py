@@ -3,7 +3,11 @@ import os
 import shutil
 import re
 
-root_directory = "Z:\Test\single"
+# Directory where to start recursively
+root_directory = "X:\AnimeMovies"
+
+# to prevent fixing files twice
+current_mkvmerge_version = "mkvmerge v53.0.0 ('Fool's Gold') 64-bit"
 
 
 def handle_directory(directory):
@@ -25,7 +29,7 @@ def check_for_srt(file, root):
 
     # check if the file is understood by mkvtoolnix and if it contains srt tracks
     if json_result['container']['recognized']:
-        if json_result['container']['type'] == "Matroska":
+        if json_result['container']['type'] == "Matroska" and json_result['container']['properties']['writing_application'] != current_mkvmerge_version:
             srt_tracks = []
             non_srt_tracks = []
             for track in json_result['tracks']:
@@ -50,7 +54,10 @@ def extract_srt(file, root, srt_tracks):
         track_extract_commands.append(track_extract)
 
     # construct and execute the command for extracting
-    command = 'mkvextract.exe "' + root + "\\" + file + '" tracks ' + ' '.join(track_extract_commands)
+    input_file = '"' + root + "\\" + file + '"'
+    command = 'mkvextract.exe ' + input_file +' tracks ' + ' '.join(track_extract_commands)
+
+    print("Starting to extract subtitles from: " + input_file)
     os.system(command)
     print("Extracting done")
 
@@ -65,7 +72,7 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
     # required information to mux the srt files with the original information like language or name
     track_mux_commands = []
     for srt_track in srt_tracks:
-        language = '--language 0:' + srt_track['properties']['language_ietf']
+        language = '--language 0:' + srt_track['properties']['language']
         track_name = '--track-name 0:"' + srt_track['properties']['track_name'] + '"'
         default_track = ('--default-track 0:yes' if srt_track['properties']['default_track'] else '')
         forced_track = ('--forced-track 0:yes' if srt_track['properties']['forced_track'] else '')
@@ -80,20 +87,20 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
     input_file = '"' + root + "\\" + file + '"'
 
     command = 'mkvmerge.exe --ui-language en ' + \
-              output_file + ' ' + \
-              subtitle_remove + ' ' + \
-              input_file + ' ' + \
+              output_file + ' ' + subtitle_remove + ' ' + input_file + ' ' + \
               ' '.join(track_mux_commands) + ' ' + \
               '--title "' + os.path.splitext(file)[0] + '" '
     os.system(command)
-    print("Remux completed")
 
 
 def cleanup(file, root):
     # check if new file was created before deleting the original one
-    if os.path.isfile(root + "\\temp\\" + file):
+    output_file = root + "\\temp\\" + file
+
+    if os.path.isfile(output_file):
         os.remove(root + "\\" + file)
-        shutil.move(root + "\\temp\\" + file, root)
+        shutil.move(output_file, root)
+        print("Remux completed. Cleaning up ...")
     else:
         print("Error muxing new file. Cleaning up ...")
     shutil.rmtree(root + "\\temp")
