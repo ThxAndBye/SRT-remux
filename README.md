@@ -1,6 +1,6 @@
 # SRT-remux
 Uses mkvextract and mkvmerge to fix strangely formatted srt subtitles in media files.  
-Uses MediaInfo CLI to check if the created mkv file has obvious errors.
+Uses MediaInfo CLI to check if the created mkv file has obvious errors.  
 More information here: https://forums.plex.tv/t/missing-lines-in-srt-subtitles
 
 MakeMKV: https://chocolatey.org/packages/MakeMKV  
