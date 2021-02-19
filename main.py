@@ -24,18 +24,19 @@ def check_for_srt(file, root):
 
     # check if the file is understood by mkvtoolnix and if it contains srt tracks
     if json_result['container']['recognized']:
-        srt_tracks = []
-        non_srt_tracks = []
-        for track in json_result['tracks']:
-            if track['type'] == "subtitles":
-                if track['codec'] == "SubRip/SRT":
-                    srt_tracks.append(track)
-                else:
-                    non_srt_tracks.append(track)
-        if len(srt_tracks) > 0:
-            extract_srt(file, root, srt_tracks)
-            remux_srt(file, root, srt_tracks, non_srt_tracks)
-            cleanup(file, root)
+        if json_result['container']['type'] == "Matroska":
+            srt_tracks = []
+            non_srt_tracks = []
+            for track in json_result['tracks']:
+                if track['type'] == "subtitles":
+                    if track['codec'] == "SubRip/SRT":
+                        srt_tracks.append(track)
+                    else:
+                        non_srt_tracks.append(track)
+            if len(srt_tracks) > 0:
+                extract_srt(file, root, srt_tracks)
+                remux_srt(file, root, srt_tracks, non_srt_tracks)
+                cleanup(file, root)
 
 
 def extract_srt(file, root, srt_tracks):
@@ -87,7 +88,7 @@ def cleanup(file, root):
     if os.path.isfile(root + "\\temp\\" + file):
         os.remove(root + "\\" + file)
         shutil.move(root + "\\temp\\" + file, root)
-        shutil.rmtree(root + "\\temp")
+    shutil.rmtree(root + "\\temp")
 
 
 if __name__ == '__main__':
