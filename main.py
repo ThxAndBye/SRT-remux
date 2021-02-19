@@ -11,8 +11,8 @@ current_mkvmerge_version = ""
 def handle_directory(directory):
     for root, dirs, files in os.walk(directory, topdown=False):
         handle_files(files, root)
-        for dir in dirs:
-            handle_directory(dir)
+        for direct in dirs:
+            handle_directory(direct)
 
 
 def handle_files(files, root):
@@ -46,9 +46,9 @@ def extract_srt(file, root, srt_tracks):
     track_extract_commands = []
     # gather some information about the subtitle tacks to extract them to ./temp
     for srt_track in srt_tracks:
-        id = str(srt_track['id'])
+        track_id = str(srt_track['id'])
         uid = str(srt_track['properties']['uid'])
-        track_extract = id + ':"' + root + '\\temp\\' + uid + '.srt"'
+        track_extract = track_id + ':"' + root + '\\temp\\' + uid + '.srt"'
         track_extract_commands.append(track_extract)
 
     # construct and execute the command for extracting
