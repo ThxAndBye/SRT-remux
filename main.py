@@ -4,8 +4,7 @@ import shutil
 import re
 import sys
 
-
-# to prevent fixing files twice, fallback
+# to prevent fixing files twice
 current_mkvmerge_version = ""
 
 
@@ -28,7 +27,8 @@ def check_for_srt(file, root):
 
     # check if the file is understood by mkvtoolnix and if it contains srt tracks
     if json_result['container']['recognized']:
-        if json_result['container']['type'] == "Matroska" and json_result['container']['properties']['writing_application'] != current_mkvmerge_version:
+        if json_result['container']['type'] == "Matroska" and json_result['container']['properties'][
+            'writing_application'] != current_mkvmerge_version:
             srt_tracks = []
             non_srt_tracks = []
             for track in json_result['tracks']:
@@ -54,7 +54,7 @@ def extract_srt(file, root, srt_tracks):
 
     # construct and execute the command for extracting
     input_file = '"' + root + "\\" + file + '"'
-    command = 'mkvextract.exe ' + input_file +' tracks ' + ' '.join(track_extract_commands)
+    command = 'mkvextract.exe ' + input_file + ' tracks ' + ' '.join(track_extract_commands)
 
     print("Starting to extract subtitles from: " + input_file)
     os.system(command)
@@ -72,7 +72,9 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
     track_mux_commands = []
     for srt_track in srt_tracks:
         language = '--language 0:' + srt_track['properties']['language']
-        track_name = '--track-name 0:"' + (srt_track['properties']['track_name'] if 'track_name' in srt_track['properties'] else gen_track_name(srt_track['properties'])) + '"'
+        track_name = '--track-name 0:"' + (
+            srt_track['properties']['track_name'] if 'track_name' in srt_track['properties'] else gen_track_name(
+                srt_track['properties'])) + '"'
         default_track = ('--default-track 0:yes' if srt_track['properties']['default_track'] else '')
         forced_track = ('--forced-track 0:yes' if srt_track['properties']['forced_track'] else '')
         srt_file = '"' + root + "\\temp\\" + str(srt_track['properties']['uid']) + '.srt"'
