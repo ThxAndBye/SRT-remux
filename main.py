@@ -139,5 +139,5 @@ if __name__ == '__main__':
         print("Starting to remux Matroska files with SRT tracks, starting at: " + root_directory)
         handle_directory(root_directory)
     else:
-        print("Error: Not a valid directory provided.\n\n"
-              "main.py <directory>")
+        print("Error: Not a valid directory provided.\n\n" + \
+              sys.argv[0] + " <directory>")
