@@ -136,7 +136,7 @@ if __name__ == '__main__':
     except IndexError:
         root_directory = ""
     if os.path.isdir(root_directory):
-        print("Starting to remux .srt files starting at: " + root_directory)
+        print("Starting to remux Matroska files with SRT tracks, starting at: " + root_directory)
         handle_directory(root_directory)
     else:
         print("Error: Not a valid directory provided.\n\n"
