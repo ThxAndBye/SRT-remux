@@ -77,7 +77,7 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
         add_subtitle = re.sub(' +', ' ', add_subtitle)
         track_mux_commands.append(add_subtitle)
 
-    output_file = '--output ' + '"' + os.path.join(root, "temp" + file) + '"'
+    output_file = '--output ' + '"' + os.path.join(root, "temp", file) + '"'
     subtitle_remove = ('-S' if len(non_srt_track_nrs) == 0 else '-s ' + ','.join(non_srt_track_nrs))
     input_file = '"' + os.path.join(root, file) + '"'
 
