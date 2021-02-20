@@ -70,7 +70,8 @@ def remux_srt(file, root, srt_tracks, non_srt_tracks):
                 srt_track['properties'])) + '"'
         default_track = ('--default-track 0:yes' if srt_track['properties']['default_track'] else '')
         forced_track = ('--forced-track 0:yes' if srt_track['properties']['forced_track'] else '')
-        srt_file = '"' + os.path.join(root, "temp", str(srt_track['properties']['uid']) + ".srt") + '"'
+        uid = str(srt_track['properties']['uid'])
+        srt_file = '"' + os.path.join(root, "temp", uid + ".srt") + '"'
 
         add_subtitle = language + ' ' + track_name + ' ' + default_track + ' ' + forced_track + ' ' + srt_file
         add_subtitle = re.sub(' +', ' ', add_subtitle)
