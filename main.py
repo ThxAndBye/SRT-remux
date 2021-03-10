@@ -1,3 +1,4 @@
+import io
 import json
 import os
 import shutil
@@ -17,6 +18,7 @@ def handle_directory(directory):
 def check_for_srt(file, root):
     command = 'mkvmerge.exe "' + os.path.join(root, file) + '" -i -F json'
     result = os.popen(command)
+    result = io.BytesIO(result.buffer.read())
     json_result = json.loads(result.read())
 
     # check if the file is understood by mkvtoolnix and if it contains srt tracks
@@ -116,6 +118,7 @@ def cleanup(file, root):
 def check_mkv(file):
     command = 'MediaInfo.exe --Output=JSON "' + file + '"'
     result = os.popen(command)
+    result = io.BytesIO(result.buffer.read())
     json_result = json.loads(result.read())
 
     is_ok = True
